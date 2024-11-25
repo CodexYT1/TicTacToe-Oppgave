@@ -51,7 +51,6 @@
 
 .game-container {
   display: flex;
-  flex-direction: column; /* Stack board and info vertically */
   align-items: center; /* Center align items */
 }
 
@@ -61,4 +60,19 @@
 
 .game-info {
   text-align: center; /* Center the text in game info */
+}
+.square {
+  width: 60px; /* Set a fixed width */
+  height: 60px; /* Set a fixed height equal to width */
+  background-color: #0000; /* Background color */
+  border: 1px solid #999; /* Border color */
+  color: white;
+}
+
+.square.filled {
+  cursor: not-allowed; /* Change cursor to indicate that it's not clickable */
+}
+
+.square:focus {
+  outline: none; /* Remove outline on focus */
 }

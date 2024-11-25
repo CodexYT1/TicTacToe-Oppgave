@@ -1,8 +1,16 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './App.css';
+
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, isFilled }) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button 
+      className={`square ${isFilled ? 'filled' : ''}`} 
+      onClick={isFilled ? null : onSquareClick} // Prevent interaction if filled
+      disabled={isFilled} // Disable the button if filled
+    >
       {value}
     </button>
   );
@@ -34,19 +42,19 @@ function Board({ xIsNext, squares, onPlay }) {
     <>
       <div className="status">{status}</div>
       <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} isFilled={!!squares[0]} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} isFilled={!!squares[1]} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} isFilled={!!squares[2]} />
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} isFilled={!!squares[3]} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} isFilled={!!squares[4]} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} isFilled={!!squares[5]} />
       </div>
       <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} isFilled={!!squares[6]} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} isFilled={!!squares[7]} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} isFilled={!!squares[8]} />
       </div>
     </>
   );
@@ -64,23 +72,10 @@ export default function Game() {
     setCurrentMove(nextHistory.length - 1);
   }
 
-  function jumpTo(nextMove) {
-    setCurrentMove(nextMove);
+  function handleReset() {
+    setHistory([Array(9).fill(null)]); // Reset history to initial state
+    setCurrentMove(0); // Reset current move to 0
   }
-
-  const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = 'Go to move #' + move;
-    } else {
-      description = 'Go to game start';
-    }
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
-  });
 
   return (
     <div className="game">
@@ -89,7 +84,7 @@ export default function Game() {
           <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
         </div>
         <div className="game-info">
-          <ol>{moves}</ol>
+          <button onClick={handleReset}>Restart Game</button> {/* Reset Button */}
         </div>
       </div>
     </div>
@@ -99,7 +94,7 @@ export default function Game() {
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
-    [3, 4, 5],
+    [3, 4 , 5],
     [6, 7, 8],
     [0, 3, 6],
     [1, 4, 7],
